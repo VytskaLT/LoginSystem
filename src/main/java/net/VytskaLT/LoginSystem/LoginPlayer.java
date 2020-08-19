@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 @RequiredArgsConstructor
 public class LoginPlayer {
 
-    private final LoginSystemPlugin plugin;
     @Getter
     private final Player player;
     @Getter
@@ -18,9 +17,11 @@ public class LoginPlayer {
     private final Location location;
     @Getter
     private final int fireTicks;
+    @Getter
+    private final boolean dead;
 
     public void reset() {
-        player.teleport(location);
+        player.teleport(dead ? player.getBedSpawnLocation() == null ? location.getWorld().getSpawnLocation() : player.getBedSpawnLocation() : location);
         player.setGameMode(gameMode);
         player.setNoDamageTicks(20*3);
         player.setFireTicks(fireTicks);

@@ -51,7 +51,9 @@ public class LoginSystemPlugin extends JavaPlugin {
     }
 
     public void login(Player player) {
-        LoginPlayer loginPlayer = new LoginPlayer(this, player, player.getGameMode(), player.getLocation(), player.getFireTicks());
+        if (player.isDead())
+            player.spigot().respawn();
+        LoginPlayer loginPlayer = new LoginPlayer(player, player.getGameMode(), player.getLocation(), player.getFireTicks(), player.isDead());
         player.teleport(loginWorld.getSpawnLocation());
         player.sendMessage(getPassword(player) == null ? getMessage("register") : getMessage("login"));
         loggedIn.add(loginPlayer);
