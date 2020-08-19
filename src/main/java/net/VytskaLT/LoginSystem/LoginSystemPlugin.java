@@ -21,7 +21,7 @@ public class LoginSystemPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);
         getServer().getPluginManager().registerEvents(new LoginListener(this), this);
 
-        Bukkit.getOnlinePlayers().forEach(p ->  p.sendMessage(getPassword(p) == null ? getMessage("register") :getMessage("login")));
+        Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(getPassword(p) == null ? getMessage("register") :getMessage("login")));
     }
 
     public void setPassword(Player player, String password) {
