@@ -15,6 +15,8 @@ public class LoginListener implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        plugin.getLocationMap().put(p, p.getLocation());
+        p.teleport(plugin.getLoginWorld().getSpawnLocation());
         p.sendMessage(plugin.getMessage("welcome"));
         p.sendMessage(plugin.getPassword(p) == null ? plugin.getMessage("register") : plugin.getMessage("login"));
     }
@@ -22,18 +24,18 @@ public class LoginListener implements Listener {
     @EventHandler
     public void chat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
-        if(plugin.getLoggedIn().contains(p))
+        if (plugin.getLoggedIn().contains(p))
             return;
         String pass = plugin.getPassword(p);
-        if(pass == null) {
-            if(e.getMessage().contains(" ")) {
+        if (pass == null) {
+            if (e.getMessage().contains(" ")) {
                 p.sendMessage(plugin.getMessage("cannot-have-spaces"));
                 return;
             }
             plugin.setPassword(p, e.getMessage());
             p.sendMessage(plugin.getMessage("register-success"));
         } else {
-            if(!pass.equals(e.getMessage())) {
+            if (!pass.equals(e.getMessage())) {
                 p.sendMessage(plugin.getMessage("incorrect-password"));
                 return;
             }

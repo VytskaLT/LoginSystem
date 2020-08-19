@@ -18,7 +18,7 @@ public class InteractListener implements Listener {
 
     @EventHandler
     public void move(PlayerMoveEvent e) {
-        if(!plugin.getLoggedIn().contains(e.getPlayer()))
+        if (!plugin.getLoggedIn().contains(e.getPlayer()))
             e.setTo(e.getFrom());
     }
 
@@ -58,7 +58,7 @@ public class InteractListener implements Listener {
     }
 
     private void check(Entity entity, Cancellable event) {
-        if(entity instanceof Player && !plugin.getLoggedIn().contains(entity))
+        if (entity instanceof Player && !plugin.getLoggedIn().contains(entity))
             event.setCancelled(true);
     }
 }
