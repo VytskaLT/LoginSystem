@@ -59,6 +59,16 @@ public class InteractListener implements Listener {
         check(e.getEntity(), e);
     }
 
+    @EventHandler
+    public void food(FoodLevelChangeEvent e) {
+        check(e.getEntity(), e);
+    }
+
+    @EventHandler
+    public void regenerate(EntityRegainHealthEvent e) {
+        check(e.getEntity(), e);
+    }
+
     private void check(Entity entity, Cancellable event) {
         if (entity instanceof Player && entity.getWorld() == plugin.getLoginWorld())
             event.setCancelled(true);
