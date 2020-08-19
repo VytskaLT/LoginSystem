@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 @RequiredArgsConstructor
 public class LoginListener implements Listener {
@@ -15,16 +17,24 @@ public class LoginListener implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        plugin.getLocationMap().put(p, p.getLocation());
-        p.teleport(plugin.getLoginWorld().getSpawnLocation());
         p.sendMessage(plugin.getMessage("welcome"));
-        p.sendMessage(plugin.getPassword(p) == null ? plugin.getMessage("register") : plugin.getMessage("login"));
+        plugin.login(p);
+    }
+
+    @EventHandler
+    public void quit(PlayerQuitEvent e) {
+        LoginPlayer loginPlayer = plugin.getPlayer(e.getPlayer());
+        if (loginPlayer != null) {
+            loginPlayer.reset();
+            plugin.getLoggedIn().remove(loginPlayer);
+        }
     }
 
     @EventHandler
     public void chat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
-        if (plugin.getLoggedIn().contains(p))
+        LoginPlayer loginPlayer = plugin.getPlayer(p);
+        if (loginPlayer == null)
             return;
         String pass = plugin.getPassword(p);
         if (pass == null) {
@@ -41,6 +51,12 @@ public class LoginListener implements Listener {
             }
             p.sendMessage(plugin.getMessage("login-success"));
         }
-        plugin.getLoggedIn().add(p);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                loginPlayer.reset();
+            }
+        }.runTask(plugin);
+        plugin.getLoggedIn().remove(loginPlayer);
     }
 }

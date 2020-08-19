@@ -14,9 +14,7 @@ import java.util.Map;
 public class LoginSystemPlugin extends JavaPlugin {
 
     @Getter
-    private final List<Player> loggedIn = new ArrayList<>();
-    @Getter
-    private final Map<Player, Location> locationMap = new HashMap<>();
+    private final List<LoginPlayer> loggedIn = new ArrayList<>();
     @Getter
     private World loginWorld;
 
@@ -27,15 +25,15 @@ public class LoginSystemPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);
         getServer().getPluginManager().registerEvents(new LoginListener(this), this);
 
-        Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(getPassword(p) == null ? getMessage("register") : getMessage("login")));
-
         loginWorld = new WorldCreator("login").type(WorldType.FLAT).generator(new EmptyWorldGenerator()).createWorld();
         loginWorld.setSpawnLocation(new Location(loginWorld, 0, 100, 0));
+
+        Bukkit.getOnlinePlayers().forEach(this::login);
     }
 
     @Override
     public void onDisable() {
-        locationMap.forEach(Entity::teleport);
+        loggedIn.forEach(LoginPlayer::reset);
     }
 
     public void setPassword(Player player, String password) {
@@ -53,6 +51,16 @@ public class LoginSystemPlugin extends JavaPlugin {
     }
 
     public void login(Player player) {
+        LoginPlayer loginPlayer = new LoginPlayer(this, player, player.getGameMode(), player.getLocation(), player.getFireTicks());
+        player.teleport(loginWorld.getSpawnLocation());
+        player.sendMessage(getPassword(player) == null ? getMessage("register") : getMessage("login"));
+        loggedIn.add(loginPlayer);
+    }
 
+    public LoginPlayer getPlayer(Player player) {
+        for (LoginPlayer loginPlayer : loggedIn)
+            if (loginPlayer.getPlayer() == player)
+                return loginPlayer;
+        return null;
     }
 }
