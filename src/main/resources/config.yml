@@ -1,0 +1,9 @@
+messages:
+  welcome: '&aWelcome!'
+  register: '&aPlease type a password that you will use to login. Please don''t use your username as the password.'
+  register-success: '&aSuccessfully registered!'
+  login: '&aPlease type the password you entered the first time.'
+  login-success: '&aSuccessfully logged in!'
+  incorrect-password: '&cWrong password!'
+  cannot-have-spaces: '&cThere cannot be spaces in a password.'
+accounts: {}
